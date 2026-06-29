@@ -10,6 +10,11 @@
     "https://www.googleapis.com/auth/script.external_request",
     "https://www.googleapis.com/auth/userinfo.email"
   ],
+  "urlFetchWhitelist": [
+    "https://api.anthropic.com/",
+    "https://meet.googleapis.com/",
+    "https://api.notion.com/"
+  ],
   "addOns": {
     "common": {
       "name": "Prolific AI Meeting Assistant",
