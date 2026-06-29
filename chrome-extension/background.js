@@ -45,10 +45,17 @@ async function getGoogleToken() {
 }
 
 // ─── Business context (Google Doc) ───────────────────────────────────────────
+// Cached in memory for the lifetime of the service worker to avoid
+// fetching on every Claude request.
+
+let _contextCache = null;
+let _contextDocId = null;
 
 async function fetchBusinessContext() {
   const settings = await getSettings();
   const docId = settings.GOOGLE_DOC_ID || '1kuplZ6LnpuQC95U40d7XXvGVdcR-o_3lmuJCrs9Xikc';
+
+  if (_contextCache && _contextDocId === docId) return _contextCache;
 
   let token;
   try { token = await getGoogleToken(); } catch (_) { return ''; }
@@ -60,7 +67,9 @@ async function fetchBusinessContext() {
   if (!res.ok) return '';
 
   const doc = await res.json();
-  return extractDocText(doc);
+  _contextCache  = extractDocText(doc);
+  _contextDocId  = docId;
+  return _contextCache;
 }
 
 function extractDocText(doc) {
