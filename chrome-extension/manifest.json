@@ -1,0 +1,44 @@
+{
+  "manifest_version": 3,
+  "name": "Prolific AI Meeting Assistant",
+  "version": "1.0.0",
+  "description": "AI-powered sidebar for Google Meet — live Q&A, notes, and summaries via Claude.",
+  "permissions": [
+    "storage",
+    "identity"
+  ],
+  "host_permissions": [
+    "https://meet.google.com/*",
+    "https://api.anthropic.com/*",
+    "https://api.notion.com/*",
+    "https://docs.googleapis.com/*",
+    "https://www.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://meet.google.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Prolific AI Meeting Assistant"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["sidebar.html", "sidebar.css", "sidebar.js"],
+      "matches": ["https://meet.google.com/*"]
+    }
+  ],
+  "oauth2": {
+    "client_id": "YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/documents",
+      "https://www.googleapis.com/auth/drive.file"
+    ]
+  }
+}
