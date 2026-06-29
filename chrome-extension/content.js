@@ -7,6 +7,95 @@ let sidebarOpen     = false;
 let qaHistory       = [];
 let notes           = [];
 
+// ─── Live Caption Transcription ───────────────────────────────────────────────
+
+let captionObserver = null;
+let pendingCaption  = '';
+let captionTimer    = null;
+let lastSpeaker     = '';
+
+const CAPTION_SELECTORS = [
+  '[jsname="tgaKEf"]',
+  '.iTTPOb',
+  '.zs7s8d',
+  '[jsname="YSxPC"]',
+  '[data-is-this-me] ~ * [jsname]',
+];
+
+const SPEAKER_SELECTORS = [
+  '[jsname="Vt9ybd"]',
+  '.KF4T6b',
+  '[jsname="bVoNN"]',
+];
+
+function extractCaptionText() {
+  for (const sel of CAPTION_SELECTORS) {
+    const els = document.querySelectorAll(sel);
+    if (els.length) {
+      const text = Array.from(els).map(e => e.textContent.trim()).filter(Boolean).join(' ');
+      if (text) return text;
+    }
+  }
+  return '';
+}
+
+function extractSpeakerName() {
+  for (const sel of SPEAKER_SELECTORS) {
+    const el = document.querySelector(sel);
+    if (el?.textContent.trim()) return el.textContent.trim();
+  }
+  return '';
+}
+
+function flushCaption() {
+  if (!pendingCaption) return;
+  const text    = pendingCaption;
+  const speaker = lastSpeaker;
+  pendingCaption = '';
+
+  const note = {
+    time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+    text: speaker ? `${speaker}: ${text}` : text,
+    auto: true
+  };
+  notes.push(note);
+  toSidebar({ type: 'TRANSCRIPT_NOTE', note });
+}
+
+function startCaptionCapture() {
+  if (captionObserver) return;
+
+  toSidebar({ type: 'CAPTION_STATUS', enabled: true });
+
+  captionObserver = new MutationObserver(() => {
+    const text = extractCaptionText();
+    if (!text || text === pendingCaption) return;
+
+    pendingCaption = text;
+    lastSpeaker    = extractSpeakerName();
+
+    clearTimeout(captionTimer);
+    captionTimer = setTimeout(flushCaption, 2500);
+  });
+
+  captionObserver.observe(document.body, {
+    childList:     true,
+    subtree:       true,
+    characterData: true
+  });
+}
+
+function stopCaptionCapture() {
+  clearTimeout(captionTimer);
+  if (pendingCaption) flushCaption();
+
+  if (captionObserver) {
+    captionObserver.disconnect();
+    captionObserver = null;
+  }
+  toSidebar({ type: 'CAPTION_STATUS', enabled: false });
+}
+
 // ─── Init ─────────────────────────────────────────────────────────────────────
 
 function init() {
@@ -207,6 +296,10 @@ function onSidebarMessage(event) {
         toSidebar({ type: 'SETTINGS_DATA', settings });
         break;
       }
+
+      case 'TOGGLE_CAPTIONS':
+        payload.enabled ? startCaptionCapture() : stopCaptionCapture();
+        break;
 
       case 'OPEN_URL':
         window.open(payload.url, '_blank');

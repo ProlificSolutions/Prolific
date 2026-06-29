@@ -384,6 +384,63 @@ textarea::placeholder { color: var(--muted); }
   word-break: break-word;
 }
 
+/* ── Transcribe bar ─────────────────────────────────────────────────────────── */
+.transcribe-bar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+}
+
+.transcribe-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-h);
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+
+.caption-toggle {
+  font-family: var(--font-h);
+  font-size: 8px;
+  letter-spacing: 1px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border: 1px solid rgba(200,206,216,0.25);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.caption-toggle[data-active="true"] {
+  background: rgba(200,206,216,0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.caption-toggle:hover { border-color: rgba(200,206,216,0.5); }
+
+/* ── Auto-transcribed notes ─────────────────────────────────────────────────── */
+.note-item.auto-note {
+  border-left: 2px solid rgba(200,206,216,0.3);
+}
+
+.note-badge {
+  flex-shrink: 0;
+  font-family: var(--font-h);
+  font-size: 7px;
+  letter-spacing: 0.8px;
+  color: var(--accent);
+  opacity: 0.6;
+  padding-top: 3px;
+}
+
 /* ── Scrollbar ───────────────────────────────────────────────────────────────── */
 ::-webkit-scrollbar       { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }

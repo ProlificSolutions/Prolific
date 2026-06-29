@@ -49,8 +49,18 @@
 
     <!-- ── Notes Tab ── -->
     <div class="tab-panel" id="tab-notes">
+      <div class="transcribe-bar">
+        <div class="transcribe-label">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex-shrink:0">
+            <circle cx="12" cy="12" r="4" fill="currentColor"/>
+            <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          AUTO-TRANSCRIBE
+        </div>
+        <button class="caption-toggle" id="captionToggle" data-active="false">OFF</button>
+      </div>
       <div class="notes-list" id="notesList">
-        <div class="empty-hint">Notes you save will appear here with timestamps.</div>
+        <div class="empty-hint">Notes you save will appear here with timestamps.<br><span style="font-size:10px;opacity:0.6">Enable Auto-Transcribe to capture live captions.</span></div>
       </div>
       <div class="input-area">
         <textarea id="noteInput" placeholder="Type a note… (Ctrl+Enter to save)" rows="3"></textarea>

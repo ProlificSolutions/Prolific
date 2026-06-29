@@ -49,9 +49,17 @@ function sendQuestion() {
 }
 
 // ─── Notes ────────────────────────────────────────────────────────────────────
-const saveNoteBtn = document.getElementById('saveNoteBtn');
-const noteInput   = document.getElementById('noteInput');
-const notesList   = document.getElementById('notesList');
+const saveNoteBtn   = document.getElementById('saveNoteBtn');
+const noteInput     = document.getElementById('noteInput');
+const notesList     = document.getElementById('notesList');
+const captionToggle = document.getElementById('captionToggle');
+
+captionToggle.addEventListener('click', () => {
+  const next = captionToggle.dataset.active !== 'true';
+  captionToggle.dataset.active = String(next);
+  captionToggle.textContent    = next ? 'ON' : 'OFF';
+  up({ type: 'TOGGLE_CAPTIONS', payload: { enabled: next } });
+});
 
 saveNoteBtn.addEventListener('click', saveNote);
 noteInput.addEventListener('keydown', e => {
@@ -152,7 +160,6 @@ window.addEventListener('message', ({ data }) => {
     }
 
     case 'NOTE_SAVED': {
-      // Remove empty hint if present
       const hint = notesList.querySelector('.empty-hint');
       if (hint) hint.remove();
 
@@ -163,6 +170,27 @@ window.addEventListener('message', ({ data }) => {
         <span class="note-text">${esc(data.note.text)}</span>`;
       notesList.appendChild(el);
       notesList.scrollTop = notesList.scrollHeight;
+      break;
+    }
+
+    case 'TRANSCRIPT_NOTE': {
+      const hint = notesList.querySelector('.empty-hint');
+      if (hint) hint.remove();
+
+      const el = document.createElement('div');
+      el.className = 'note-item auto-note';
+      el.innerHTML = `
+        <span class="note-time">${esc(data.note.time)}</span>
+        <span class="note-badge">CC</span>
+        <span class="note-text">${esc(data.note.text)}</span>`;
+      notesList.appendChild(el);
+      notesList.scrollTop = notesList.scrollHeight;
+      break;
+    }
+
+    case 'CAPTION_STATUS': {
+      captionToggle.dataset.active = String(data.enabled);
+      captionToggle.textContent    = data.enabled ? 'ON' : 'OFF';
       break;
     }
 
