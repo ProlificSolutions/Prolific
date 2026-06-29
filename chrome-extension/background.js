@@ -21,22 +21,22 @@ async function handleMessage(msg) {
 
 async function getSettings() {
   return chrome.storage.sync.get([
-    'ANTHROPIC_API_KEY', 'NOTION_API_KEY', 'NOTION_DATABASE_ID',
-    'GOOGLE_DOC_ID', 'GOOGLE_ACCESS_TOKEN'
+    'ANTHROPIC_API_KEY', 'NOTION_API_KEY', 'NOTION_DATABASE_ID', 'GOOGLE_DOC_ID'
   ]);
 }
 
 // ─── Google auth ─────────────────────────────────────────────────────────────
+// Uses Chrome's built-in identity API — token is refreshed automatically,
+// no manual token management needed.
 
 async function getGoogleToken() {
-  const { GOOGLE_ACCESS_TOKEN } = await chrome.storage.sync.get('GOOGLE_ACCESS_TOKEN');
-  if (GOOGLE_ACCESS_TOKEN) return GOOGLE_ACCESS_TOKEN;
-
-  // Fall back to Chrome identity (requires oauth2.client_id in manifest)
   return new Promise((resolve, reject) => {
     chrome.identity.getAuthToken({ interactive: true }, token => {
       if (chrome.runtime.lastError) {
-        reject(new Error('Google auth failed. Add a token in Settings or configure OAuth client_id in the manifest.'));
+        reject(new Error(
+          'Google sign-in failed: ' + chrome.runtime.lastError.message +
+          '. Make sure you are signed into Chrome with your Google account.'
+        ));
       } else {
         resolve(token);
       }

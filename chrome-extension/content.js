@@ -202,8 +202,7 @@ function onSidebarMessage(event) {
 
       case 'GET_SETTINGS': {
         const settings = await chrome.storage.sync.get([
-          'ANTHROPIC_API_KEY', 'NOTION_API_KEY', 'NOTION_DATABASE_ID',
-          'GOOGLE_DOC_ID', 'GOOGLE_ACCESS_TOKEN'
+          'ANTHROPIC_API_KEY', 'NOTION_API_KEY', 'NOTION_DATABASE_ID', 'GOOGLE_DOC_ID'
         ]);
         toSidebar({ type: 'SETTINGS_DATA', settings });
         break;

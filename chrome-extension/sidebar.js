@@ -111,8 +111,7 @@ document.getElementById('saveSettingsBtn').addEventListener('click', () => {
     ANTHROPIC_API_KEY:  v('anthropicKey'),
     NOTION_API_KEY:     v('notionKey'),
     NOTION_DATABASE_ID: v('notionDbId'),
-    GOOGLE_DOC_ID:      v('googleDocId') || '1kuplZ6LnpuQC95U40d7XXvGVdcR-o_3lmuJCrs9Xikc',
-    GOOGLE_ACCESS_TOKEN: v('googleToken')
+    GOOGLE_DOC_ID: v('googleDocId') || '1kuplZ6LnpuQC95U40d7XXvGVdcR-o_3lmuJCrs9Xikc'
   };
   // Only send non-empty values
   Object.keys(payload).forEach(k => { if (!payload[k]) delete payload[k]; });
@@ -214,7 +213,6 @@ window.addEventListener('message', ({ data }) => {
       setVal('notionKey',    settings.NOTION_API_KEY);
       setVal('notionDbId',   settings.NOTION_DATABASE_ID);
       setVal('googleDocId',  settings.GOOGLE_DOC_ID);
-      setVal('googleToken',  settings.GOOGLE_ACCESS_TOKEN);
       break;
     }
   }
